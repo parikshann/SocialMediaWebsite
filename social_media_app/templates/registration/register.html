@@ -1,0 +1,10 @@
+<!-- social_media_app/templates/registration/register.html -->
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register</button>
+</form>
+
+
+

@@ -1,0 +1,22 @@
+<!-- templates/home.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to the Social Media Platform</title>
+</head>
+<body>
+    <h1>SOCIAL MEDIA</h1>
+    <p>WELCOME IN</p>
+
+    {% if user.is_authenticated %}
+        <p>Hello, {{ user.username }}!</p>
+        <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+        <p>Please log in or register to access the platform:</p>
+        <a href="{% url 'login' %}">Login</a> | <a href="{% url 'register' %}">Register</a>
+    {% endif %}
+
+    <!-- You can add more HTML content here -->
+</body>
+</html>
