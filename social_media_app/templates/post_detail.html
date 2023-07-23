@@ -1,0 +1,13 @@
+<!-- social_media_app/templates/post_detail.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{ post.title }}</h1>
+  <p>{{ post.content }}</p>
+  {% if post.image %}
+    <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width: 300px;">
+  {% endif %}
+  <a href="{% url 'edit_post' post.pk %}">Edit</a>
+  <a href="{% url 'delete_post' post.pk %}">Delete</a>
+{% endblock %}

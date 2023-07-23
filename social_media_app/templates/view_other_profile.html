@@ -1,0 +1,30 @@
+<!-- templates/view_other_profile.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="user-info">
+        <img src="{{ user_profile.profile_picture.url }}" alt="{{ user_profile.user.username }}'s Profile Picture">
+        <p><strong>Username:</strong> {{ user_profile.user.username }}</p>
+        <p><strong>Bio:</strong> {{ user_profile.bio }}</p>
+        <p><strong>Followers:</strong> {{ user_profile.followers.count }}</p>
+        <p><strong>Following:</strong> {{ user_profile.following.count }}</p>
+    </div>
+
+    <h2>{{ user_profile.user.username }}'s Posts:</h2>
+    {% if posts %}
+        <ul class="post-list">
+            {% for post in posts %}
+                <li class="post-item">
+                    <strong>{{ post.author.username }}</strong>: {{ post.content }}
+                    {% if post.image %}
+                        <br>
+                        <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width: 300px;">
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No posts yet.</p>
+    {% endif %}
+{% endblock %}

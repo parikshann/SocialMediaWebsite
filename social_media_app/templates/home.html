@@ -4,19 +4,92 @@
 <html>
 <head>
     <title>Welcome to the Social Media Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .home-container {
+            text-align: center;
+            max-width: 400px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .welcome-message {
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #428bca;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #3071a9;
+        }
+
+        .login-link {
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>SOCIAL MEDIA</h1>
-    <p>WELCOME IN</p>
+    <!-- templates/home.html -->
+{% extends 'base.html' %}
 
-    {% if user.is_authenticated %}
-        <p>Hello, {{ user.username }}!</p>
-        <a href="{% url 'logout' %}">Logout</a>
+{% block content %}
+    <div class="home-container">
+        <h1>SOCIAL MEDIA</h1>
+        <p class="welcome-message">WELCOME IN</p>
+
+        {% if user.is_authenticated %}
+            <p>Hello, <strong>{{ user.username }}</strong>!</p>
+            <a href="{% url 'logout' %}" class="btn">Logout</a>
+            
+            <!-- Add the "Create New Post" link here -->
+            <a href="{% url 'create_post' %}" class="btn">Create New Post</a>
+        {% else %}
+            <p>Please log in or register to access the platform:</p>
+            <a href="{% url 'login' %}" class="btn login-link">Login</a>
+            <a href="{% url 'register' %}" class="btn">Register</a>
+        {% endif %}
+    </div>
+
+    {% if posts %}
+        <h2>Recent Posts:</h2>
+        <ul>
+            {% for post in posts %}
+                <li>
+                    <strong>{{ post.author.username }}</strong>: {{ post.content }}
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 200px;">
+                    {% endif %}
+                    <br>
+                    <a href="{% url 'edit_post' post.id %}">Edit</a> |
+                    <a href="{% url 'delete_post' post.id %}">Delete</a>
+                </li>
+            {% endfor %}
+        </ul>
     {% else %}
-        <p>Please log in or register to access the platform:</p>
-        <a href="{% url 'login' %}">Login</a> | <a href="{% url 'register' %}">Register</a>
+        <p>No posts yet.</p>
     {% endif %}
-
-    <!-- You can add more HTML content here -->
-</body>
-</html>
+{% endblock %}

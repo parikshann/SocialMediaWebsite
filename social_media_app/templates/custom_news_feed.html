@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Social Media App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        h1 {
+            color: #0066cc;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #009933;
+        }
+
+        p, ul {
+            color: #333333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #cccccc;
+        }
+
+        strong {
+            color: #0066cc;
+        }
+
+        a {
+            color: #009933;
+            text-decoration: none;
+            border-bottom: 1px dotted #009933;
+        }
+
+        a:hover {
+            border-bottom-style: solid;
+        }
+
+        /* Additional styles for the user profile section */
+        .user-info {
+            margin-top: 20px;
+            border: 1px solid #cccccc;
+            padding: 10px;
+        }
+
+        .user-info img {
+            max-width: 100px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-info p {
+            margin: 0;
+        }
+
+        /* Additional styles for the user actions section */
+        .user-actions {
+            margin-top: 20px;
+        }
+
+        .user-actions a {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 10px 20px;
+            border: 2px solid #009933;
+            color: #009933;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .user-actions a:hover {
+            background-color: #009933;
+            color: #fff;
+        }
+
+        .user-actions .btn-logout {
+            color: #cc0000;
+            border-color: #cc0000;
+        }
+
+        .user-actions .btn-logout:hover {
+            background-color: #cc0000;
+        }
+
+        /* Additional styles for the posts section */
+        .post-list {
+            margin-top: 20px;
+        }
+
+        .post-item {
+            margin-bottom: 20px;
+        }
+
+        .post-item img {
+            max-width: 300px;
+        }
+
+        .post-actions {
+            margin-top: 10px;
+        }
+
+        .post-actions a {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 5px 10px;
+            border: 1px solid #cccccc;
+            color: #0066cc;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .post-actions a:hover {
+            background-color: #0066cc;
+            color: #fff;
+        }
+
+        /* Additional styles for the comments section */
+        .comment-list {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .comment-item {
+            margin-bottom: 10px;
+        }
+
+        .comment-item strong {
+            color: #cc0000;
+        }
+
+        .comment-actions {
+            margin-top: 5px;
+        }
+
+        .comment-actions a {
+            display: inline-block;
+            margin-right: 5px;
+            padding: 2px 5px;
+            border: 1px solid #cccccc;
+            color: #cc0000;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+
+        .comment-actions a:hover {
+            background-color: #cc0000;
+            color: #fff;
+        }
+
+        .comment-form {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            height: 60px;
+            padding: 5px;
+            border: 1px solid #cccccc;
+            border-radius: 3px;
+        }
+
+        .comment-form button {
+            margin-top: 5px;
+            padding: 5px 10px;
+            background-color: #009933;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .comment-form button:hover {
+            background-color: #006622;
+        }
+    </style>
+</head>
+<body>
+    <h1>Social Media App</h1>
+
+    <!-- Display user's profile information outside the loop -->
+    {% if user.is_authenticated %}
+    <div class="user-info">
+        <img src="{{ user.userprofile.profile_picture.url }}" alt="{{ user.username }}'s Profile Picture">
+        <p><strong>Username:</strong> {{ user.userprofile.user.username }}</p>
+        <p><strong>Bio:</strong> {{ user.userprofile.bio }}</p>
+        <p><strong>Followers:</strong> {{ user.userprofile.followers.count }}</p>
+        <p><strong>Following:</strong> {{ user.userprofile.following.count }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Display user actions section -->
+    <div class="user-actions">
+        {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="btn btn-logout">Logout</a>
+            <a href="{% url 'create_post' %}" class="btn btn-create-post">Create New Post</a>
+            <a href="{% url 'view_profile' %}" class="btn btn-view-profile">View Profile</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn-login">Login</a>
+            <a href="{% url 'register' %}" class="btn btn-register">Register</a>
+        {% endif %}
+    </div>
+
+    <!-- Display posts section -->
+    <div class="post-list">
+        {% if posts %}
+            <h2>Recent Posts:</h2>
+            <ul>
+                {% for post in posts %}
+                    <li class="post-item">
+                        <strong><a href="{% url 'view_profile' user_id=post.author.userprofile.id %}">{{ post.author.username }}</a></strong>:
+                        {{ post.content }}
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                        {% endif %}
+                        <div class="post-actions">
+                            {% if user.is_authenticated and user == post.author %}
+                                <a href="{% url 'edit_post' post.pk %}" class="btn btn-edit">Edit</a>
+                                <a href="{% url 'delete_post' post.pk %}" class="btn btn-delete">Delete</a>
+                            {% endif %}
+                        </div>
+
+                        <!-- Display comments section -->
+                        <!-- Display comments section -->
+<div class="comment-list">
+    {% if post.comments.exists %}
+        {% for comment in post.comments.all %}
+            <div class="comment-item">
+                <strong>{{ comment.author.username }}</strong>:
+                {{ comment.content }}
+                {% if user.is_authenticated and user == comment.author %}
+                    <div class="comment-actions">
+                        <a href="{% url 'edit_comment' comment.pk %}" class="btn btn-edit-comment">Edit</a>
+                        <a href="{% url 'delete_comment' comment.pk %}" class="btn btn-delete-comment">Delete</a>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No comments yet.</p>
+    {% endif %}
+</div>
+
+
+                        <!-- Comment form for adding new comments -->
+                        {% if user.is_authenticated %}
+                            <div class="comment-form">
+                                <form method="post" action="{% url 'create_comment' post_id=post.pk %}">
+                                    {% csrf_token %}
+                                    <textarea name="content" placeholder="Add your comment here..."></textarea>
+                                    <button type="submit">Add Comment</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No posts yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Add more features and interactivity as needed -->
+</body>
+</html>

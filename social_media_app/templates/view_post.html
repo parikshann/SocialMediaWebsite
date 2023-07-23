@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Post</title>
+</head>
+<body>
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.content }}</p>
+    {% if post.image %}
+        <img src="{{ post.image.url }}" alt="{{ post.title }}">
+    {% endif %}
+
+    <h2>Comments:</h2>
+    {% for comment in comments %}
+        <p>{{ comment.content }} - by {{ comment.author.username }} at {{ comment.timestamp }}</p>
+    {% endfor %}
+
+    <h2>Add Comment:</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Comment</button>
+    </form>
+
+    <a href="{% url 'home' %}">Back to Home</a>
+</body>
+</html>
+
+<!-- view_post.html -->
+
+<!-- Existing code for displaying post details -->
+<!-- ... -->
+
+<!-- Display comments section -->
+<div class="comment-list">
+    {% for comment in comments %}
+        <div class="comment-item">
+            <strong>{{ comment.author.username }}</strong>:
+            {{ comment.content }}
+            {% if user.is_authenticated and user == comment.author %}
+                <div class="comment-actions">
+                    <a href="{% url 'edit_comment' comment.pk %}" class="btn btn-edit-comment">Edit</a>
+                    <a href="{% url 'delete_comment' comment.pk %}" class="btn btn-delete-comment">Delete</a>
+                </div>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No comments yet.</p>
+    {% endfor %}
+</div>
+
+<!-- Comment form for adding new comments -->
+{% if user.is_authenticated %}
+
+    <div class="comment-form">
+        <h2>Add Comment:</h2>
+        <form method="post" action="{% url 'create_comment' post_id=post.pk %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Add Comment</button>
+        </form>
+    </div>
+{% endif %}
+
+

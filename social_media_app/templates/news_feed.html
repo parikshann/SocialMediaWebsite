@@ -1,0 +1,36 @@
+<!-- templates/news_feed.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>News Feed</title>
+</head>
+<body>
+    <h1>News Feed</h1>
+
+    {% if user.is_authenticated %}
+        <p>Hello, {{ user.username }}!</p>
+        <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+        <p>Please log in or register to access the news feed:</p>
+        <a href="{% url 'login' %}">Login</a> | <a href="{% url 'register' %}">Register</a>
+    {% endif %}
+
+    {% if posts %}
+        <h2>Recent Posts:</h2>
+        <ul>
+            {% for post in posts %}
+                <li>
+                    <strong>{{ post.user.username }}</strong>:
+                    {{ post.content }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No posts yet.</p>
+    {% endif %}
+
+    <!-- Add more features and interactivity as needed -->
+
+</body>
+</html>
